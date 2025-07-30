@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <flexiPage>Assistant_UI_Demo_Page</flexiPage>
+    <description>AI Assistant Demo Tab</description>
+    <label>AI Assistant</label>
+    <motif>Custom9: Checkin</motif>
+</CustomTab>

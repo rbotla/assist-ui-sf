@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#0176D3</headerColor>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <description>AI Assistant Demo Application using assistant-ui framework</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>Assistant UI Demo</label>
+    <navType>Standard</navType>
+    <tabs>standard-home</tabs>
+    <tabs>Assistant_UI_Demo_Tab</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>Assistant_UI_Demo_UtilityBar</utilityBar>
+</CustomApplication>

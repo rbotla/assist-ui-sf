@@ -1,0 +1,30 @@
+<template>
+    <div class="assistant-wrapper">
+        <!-- Loading State -->
+        <template lwc:if={showLoading}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text="Loading Assistant UI..." size="medium"></lightning-spinner>
+                <p class="loading-text">Loading AI Assistant...</p>
+            </div>
+        </template>
+
+        <!-- Error State -->
+        <template lwc:if={showError}>
+            <div class="error-container">
+                <lightning-icon icon-name="utility:error" variant="error" size="medium"></lightning-icon>
+                <h3>Failed to Load Assistant</h3>
+                <p>Error: {error}</p>
+                <lightning-button 
+                    label="Retry" 
+                    onclick={loadAssistantUI}
+                    variant="brand">
+                </lightning-button>
+            </div>
+        </template>
+
+        <!-- Assistant UI Container -->
+        <template lwc:if={showAssistant}>
+            <div class="assistant-container"></div>
+        </template>
+    </div>
+</template>

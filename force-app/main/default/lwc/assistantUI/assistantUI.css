@@ -1,0 +1,58 @@
+.assistant-wrapper {
+    height: 600px;
+    width: 100%;
+    border: 1px solid #dddbda;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 16px;
+}
+
+.loading-text {
+    color: #706e6b;
+    font-size: 14px;
+    margin: 0;
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 16px;
+    padding: 20px;
+    text-align: center;
+}
+
+.error-container h3 {
+    margin: 0;
+    color: #c23934;
+    font-size: 18px;
+}
+
+.error-container p {
+    margin: 0;
+    color: #706e6b;
+    font-size: 14px;
+    max-width: 400px;
+    word-wrap: break-word;
+}
+
+.assistant-container {
+    height: 100%;
+    width: 100%;
+}
+
+/* Ensure the React app fills the container */
+.assistant-container > div {
+    height: 100%;
+}
