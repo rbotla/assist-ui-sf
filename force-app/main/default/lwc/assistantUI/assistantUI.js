@@ -19,6 +19,17 @@ export default class AssistantUI extends LightningElement {
             const scriptUrl = ASSISTANT_UI_BUNDLE + '?v=' + Date.now();
             console.log('[AssistantUI] Full script URL:', scriptUrl);
             
+            // Check CSP headers
+            try {
+                const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+                if (cspMeta) {
+                    console.log('[AssistantUI] CSP Meta found:', cspMeta.content);
+                }
+                console.log('[AssistantUI] Current domain:', window.location.origin);
+            } catch (cspError) {
+                console.error('[AssistantUI] Error checking CSP:', cspError);
+            }
+            
             // Check if static resource exists by trying to fetch it first
             try {
                 const response = await fetch(scriptUrl, { method: 'HEAD' });
@@ -26,11 +37,28 @@ export default class AssistantUI extends LightningElement {
                 console.log('[AssistantUI] Static resource check - Headers:', Array.from(response.headers.entries()));
             } catch (fetchError) {
                 console.error('[AssistantUI] Failed to check static resource:', fetchError);
+                console.error('[AssistantUI] Fetch error suggests possible CSP or network issue');
             }
             
             console.log('[AssistantUI] Calling loadScript...');
-            await loadScript(this, scriptUrl);
-            console.log('[AssistantUI] loadScript completed successfully');
+            
+            try {
+                await loadScript(this, scriptUrl);
+                console.log('[AssistantUI] loadScript completed successfully');
+            } catch (loadScriptError) {
+                console.error('[AssistantUI] loadScript failed, trying alternative method');
+                console.error('[AssistantUI] LoadScript error:', loadScriptError);
+                
+                // Check if error is CSP-related
+                if (loadScriptError?.message?.includes('Content Security Policy') || 
+                    loadScriptError?.message?.includes('CSP') ||
+                    loadScriptError?.name === 'SecurityError') {
+                    console.error('[AssistantUI] CSP violation detected!');
+                }
+                
+                // Try alternative loading method
+                await this.loadScriptAlternative(scriptUrl);
+            }
             
             // Check immediately after loadScript
             console.log('[AssistantUI] Immediate check - window.AssistantUI:', window.AssistantUI);
@@ -59,9 +87,69 @@ export default class AssistantUI extends LightningElement {
             console.error('[AssistantUI] Error message:', error?.message);
             console.error('[AssistantUI] Error stack:', error?.stack);
             
-            this.error = error?.message || error?.toString() || 'Unknown error loading Assistant UI';
+            // Check for specific CSP error patterns
+            const errorMsg = error?.message || error?.toString() || '';
+            if (errorMsg.includes('Content Security Policy') || 
+                errorMsg.includes('CSP') || 
+                errorMsg.includes('SecurityError') ||
+                error?.name === 'SecurityError') {
+                console.error('[AssistantUI] *** CSP VIOLATION DETECTED ***');
+                this.error = 'Content Security Policy blocked script loading. Contact admin to whitelist static resources.';
+            } else {
+                this.error = error?.message || error?.toString() || 'Unknown error loading Assistant UI';
+            }
+            
             console.error('Error loading Assistant UI:', error);
         }
+    }
+
+    async loadScriptAlternative(scriptUrl) {
+        console.log('[AssistantUI] Trying alternative script loading method...');
+        
+        return new Promise((resolve, reject) => {
+            try {
+                // Try creating script tag manually
+                const script = document.createElement('script');
+                script.src = scriptUrl;
+                script.type = 'text/javascript';
+                script.async = true;
+                
+                script.onload = () => {
+                    console.log('[AssistantUI] Alternative loading successful');
+                    resolve();
+                };
+                
+                script.onerror = (error) => {
+                    console.error('[AssistantUI] Alternative loading also failed:', error);
+                    reject(new Error('Alternative script loading failed: ' + error));
+                };
+                
+                // Try appending to different locations
+                const targets = [
+                    this.template.querySelector('.assistant-container'),
+                    document.head,
+                    document.body
+                ];
+                
+                let appended = false;
+                for (const target of targets) {
+                    if (target) {
+                        console.log('[AssistantUI] Appending script to:', target.tagName);
+                        target.appendChild(script);
+                        appended = true;
+                        break;
+                    }
+                }
+                
+                if (!appended) {
+                    reject(new Error('No suitable container found for script'));
+                }
+                
+            } catch (altError) {
+                console.error('[AssistantUI] Alternative loading method failed:', altError);
+                reject(altError);
+            }
+        });
     }
 
     initializeAssistant() {
