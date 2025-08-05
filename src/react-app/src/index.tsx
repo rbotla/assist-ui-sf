@@ -46,7 +46,15 @@ const AssistantUI = {
 // Immediately make it available globally
 if (typeof window !== 'undefined') {
   (window as any).AssistantUI = AssistantUI;
-  console.log('AssistantUI attached to window object');
+  console.log('[React Bundle] AssistantUI attached to window object');
+  console.log('[React Bundle] window.AssistantUI:', (window as any).AssistantUI);
+  
+  // Also try alternative global assignments for debugging
+  (window as any).AssistantUIGlobal = AssistantUI;
+  (window as any).ReactAssistant = AssistantUI;
+  
+  // Debug: Show that the bundle loaded
+  console.log('[React Bundle] Assistant UI bundle loaded successfully, version:', AssistantUI.version);
 }
 
 // For webpack UMD export
