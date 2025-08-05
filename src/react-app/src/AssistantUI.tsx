@@ -31,12 +31,12 @@ const createSalesforceAdapter = (sessionId: string) => ({
 
       const result = await response.json();
       
-      if (result.success) {
+      if (result?.success) {
         return {
-          content: [{ type: 'text', text: result.message }]
+          content: [{ type: 'text', text: result?.message || 'Response received' }]
         };
       } else {
-        throw new Error(result.error || 'Failed to get response');
+        throw new Error(result?.error || 'Failed to get response');
       }
     } catch (error) {
       console.error('Error calling Salesforce assistant:', error);

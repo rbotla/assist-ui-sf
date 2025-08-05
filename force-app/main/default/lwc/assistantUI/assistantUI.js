@@ -1,6 +1,6 @@
 import { LightningElement } from 'lwc';
 import { loadScript } from 'lightning/platformResourceLoader';
-import ASSISTANT_UI_BUNDLE from '@salesforce/resourceUrl/assistantui_nextjs';
+import ASSISTANT_UI_BUNDLE from '@salesforce/resourceUrl/assistantui';
 
 export default class AssistantUI extends LightningElement {
     isAssistantLoaded = false;
@@ -22,7 +22,7 @@ export default class AssistantUI extends LightningElement {
             }, 100);
             
         } catch (error) {
-            this.error = error.message;
+            this.error = error?.message || error?.toString() || 'Unknown error loading Assistant UI';
             console.error('Error loading Assistant UI:', error);
         }
     }
@@ -44,7 +44,7 @@ export default class AssistantUI extends LightningElement {
             waitForContainer();
             
         } catch (error) {
-            this.error = error.message;
+            this.error = error?.message || error?.toString() || 'Error initializing Assistant';
             console.error('Error in initializeAssistant:', error);
         }
     }
@@ -58,7 +58,7 @@ export default class AssistantUI extends LightningElement {
                 throw new Error('AssistantUI not available');
             }
         } catch (error) {
-            this.error = error.message;
+            this.error = error?.message || error?.toString() || 'Error in React initialization';
             console.error('Error initializing assistant:', error);
         }
     }

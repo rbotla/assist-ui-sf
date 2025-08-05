@@ -30,10 +30,11 @@ const salesforceApexTool = {
       });
       
       const result = await response.json();
-      return result.message || 'I apologize, but I encountered an error processing your request.';
+      return result?.message || 'I apologize, but I encountered an error processing your request.';
       
     } catch (error) {
-      return `I'm sorry, I encountered an error: ${error.message}`;
+      const errorMessage = error?.message || error?.toString() || 'Unknown error';
+      return `I'm sorry, I encountered an error: ${errorMessage}`;
     }
   }
 };
