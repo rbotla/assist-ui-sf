@@ -14,23 +14,51 @@ export default class AssistantUI extends LightningElement {
     async loadAssistantUI() {
         try {
             console.log('[AssistantUI] Starting to load bundle...');
-            await loadScript(this, ASSISTANT_UI_BUNDLE + '?v=' + Date.now());
-            console.log('[AssistantUI] Bundle loaded successfully');
+            console.log('[AssistantUI] Bundle URL:', ASSISTANT_UI_BUNDLE);
             
-            // Add debug logging
-            console.log('[AssistantUI] Checking window.AssistantUI:', window.AssistantUI);
-            console.log('[AssistantUI] Window keys with Assistant:', 
+            const scriptUrl = ASSISTANT_UI_BUNDLE + '?v=' + Date.now();
+            console.log('[AssistantUI] Full script URL:', scriptUrl);
+            
+            // Check if static resource exists by trying to fetch it first
+            try {
+                const response = await fetch(scriptUrl, { method: 'HEAD' });
+                console.log('[AssistantUI] Static resource check - Status:', response.status);
+                console.log('[AssistantUI] Static resource check - Headers:', Array.from(response.headers.entries()));
+            } catch (fetchError) {
+                console.error('[AssistantUI] Failed to check static resource:', fetchError);
+            }
+            
+            console.log('[AssistantUI] Calling loadScript...');
+            await loadScript(this, scriptUrl);
+            console.log('[AssistantUI] loadScript completed successfully');
+            
+            // Check immediately after loadScript
+            console.log('[AssistantUI] Immediate check - window.AssistantUI:', window.AssistantUI);
+            console.log('[AssistantUI] Immediate check - window keys with Assistant:', 
                 Object.keys(window).filter(k => k.toLowerCase().includes('assistant'))
             );
             
+            console.log('[AssistantUI] Waiting 200ms for bundle initialization...');
             await new Promise(resolve => setTimeout(resolve, 200));
             
+            // Check again after delay
+            console.log('[AssistantUI] After delay - window.AssistantUI:', window.AssistantUI);
+            console.log('[AssistantUI] After delay - window keys with Assistant:', 
+                Object.keys(window).filter(k => k.toLowerCase().includes('assistant'))
+            );
+            
             this.isAssistantLoaded = true;
+            console.log('[AssistantUI] Setting up initialization timeout...');
             setTimeout(() => {
                 this.initializeAssistant();
             }, 100);
             
         } catch (error) {
+            console.error('[AssistantUI] Error in loadAssistantUI - Error object:', error);
+            console.error('[AssistantUI] Error name:', error?.name);
+            console.error('[AssistantUI] Error message:', error?.message);
+            console.error('[AssistantUI] Error stack:', error?.stack);
+            
             this.error = error?.message || error?.toString() || 'Unknown error loading Assistant UI';
             console.error('Error loading Assistant UI:', error);
         }
